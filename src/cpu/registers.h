@@ -16,6 +16,11 @@ struct Registers {
     Byte l;
 
     /**
+     * @brief default init for the registers
+     */
+    Registers();
+
+    /**
      * @brief returns the value of the artificial af register
      */
     Word getAf() const;
@@ -69,4 +74,25 @@ struct Registers {
      * @param v the value to set the register to
      */
     void setHl(const Word& v);
+
+    /**
+     * @brief sets the zero flag
+     * @param value if the flag should be on or off
+     */
+    void setZeroFlag(const bool& value);
+    /**
+     * @brief sets the subtraction flag
+     * @param value if the flag should be on or off
+     */
+    void setSubtractionFlag(const bool& value);
+    /**
+     * @brief sets the half-carry flag
+     * @param value if the flag should be on or off
+     */
+    void setHalfCarryFlag(const bool& value);
+    /**
+     * @brief sets the carry flag
+     * @param value if the flag should be on or off
+     */
+    void setCarryFlag(const bool& value);
 };

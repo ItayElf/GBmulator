@@ -1,13 +1,16 @@
 #include "registers.h"
 
-#define TOP_WORD (0xff00)
-#define FULL_BYTE (0xff)
 #define FLAG_OFF (0)
+#define REGISTER_INIT_VALUE (0)
 
 #define ZERO_FLAG_ON (0b10000000)
 #define SUBTRACTION_FLAG_ON (0b01000000)
 #define HALF_CARRY_FLAG_ON (0b00100000)
 #define CARRY_FLAG_ON (0b00010000)
+
+Registers::Registers() {
+    a = b = c = d = e = f = h = l = REGISTER_INIT_VALUE;
+}
 
 Word Registers::getAf() const {
     return (Word)a << 8 | (Word)f;
@@ -50,4 +53,17 @@ void Registers::setDe(const Word& v) {
 void Registers::setHl(const Word& v) {
     h = (Byte)((v & TOP_WORD) >> 8);
     l = (Byte)(v & FULL_BYTE);
+}
+
+void Registers::setZeroFlag(const bool& value) {
+    f = (value) ? f | ZERO_FLAG_ON : f ^ ZERO_FLAG_ON;
+}
+void Registers::setSubtractionFlag(const bool& value) {
+    f = (value) ? f | SUBTRACTION_FLAG_ON : f ^ SUBTRACTION_FLAG_ON;
+}
+void Registers::setHalfCarryFlag(const bool& value) {
+    f = (value) ? f | HALF_CARRY_FLAG_ON : f ^ HALF_CARRY_FLAG_ON;
+}
+void Registers::setCarryFlag(const bool& value) {
+    f = (value) ? f | CARRY_FLAG_ON : f ^ CARRY_FLAG_ON;
 }
