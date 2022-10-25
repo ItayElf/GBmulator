@@ -1,6 +1,11 @@
 #include <iostream>
 
+#include "cpu/cpu.h"
+
 int main() {
-    std::cout << "Hello world\n";
+    CPU cpu = CPU();
+    while (true) {
+        cpu.step();
+    }
     return 0;
 }

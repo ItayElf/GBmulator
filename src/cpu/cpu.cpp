@@ -4,14 +4,16 @@
 
 #include "instructions.h"
 
-#define WORD_OFF (0)
 #define HIGH_HALF_BYTE (0xf0)
 #define LDH_START_ADDRESS (0xff00)
 
+#define PC_START_VALUE (0x0000)
+#define SP_START_VALUE (0xffff)
+
 CPU::CPU() {
     registers = Registers();
-    pc = WORD_OFF;
-    sp = WORD_OFF;
+    pc = PC_START_VALUE;
+    sp = SP_START_VALUE;
     bus = MemoryBus();
     isHalted = false;
     areInturrptsEnabled = true;
@@ -718,7 +720,7 @@ Word CPU::execute(const Byte& opcode) {
         case POP_HL:
             registers.setHl(pop());
             return pc + 1;
-        case LC_C_ADDR_A:
+        case LD_C_ADDR_A:
             bus.writeByte(bus.readByte(LDH_START_ADDRESS + registers.c), registers.a);
             return pc + 1;
         case PUSH_HL:
@@ -796,7 +798,8 @@ Word CPU::execute(const Byte& opcode) {
             push(pc);
             return 0x38;
         default:
-            std::cout << "Unknown Opcode: " << opcode << "\n";
+            std::cout << "Unknown Opcode: " << (Word)opcode << "\n";
+            throw 1;
             return pc;
     }
 }
@@ -1624,7 +1627,8 @@ Word CPU::executePrefixed(const Byte& opcode) {
             set(7, registers.a);
             return pc + 1;
         default:
-            std::cout << "Unknown Opcode: " << opcode << "\n";
+            std::cout << "Unknown prefixed Opcode: " << (Word)opcode << "\n";
+            throw 1;
             return pc;
     }
 }
@@ -1820,7 +1824,7 @@ Word CPU::jumpRelative(const bool& shouldJump, const SignedByte& value) {
     if (!shouldJump) {
         return pc + 2;
     }
-    return pc + (SignedWord)value;
+    return pc + 2 + (SignedWord)value;
 }
 
 void CPU::push(const Word& value) {

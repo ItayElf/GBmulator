@@ -253,7 +253,7 @@
 // 0xe*
 #define LDH_A8_A (0xe0)
 #define POP_HL (0xe1)
-#define LC_C_ADDR_A (0xe2)
+#define LD_C_ADDR_A (0xe2)
 #define PUSH_HL (0xe5)
 #define AND_D8 (0xe6)
 #define RST_20H (0xe7)
