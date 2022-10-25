@@ -150,6 +150,35 @@ Word CPU::execute(const Byte& opcode) {
         case LD_H_D8:
             registers.h = bus.readByte(pc + 1);
             return pc + 2;
+        case DAA:
+            if (registers.isSubtractionFlag()) {
+                if (registers.isCarryFlag()) {
+                    registers.a -= 0x60;
+                }
+                if (registers.isHalfCarryFlag()) {
+                    registers.a -= 0x06;
+                }
+            } else {
+                if (registers.isCarryFlag() || registers.a > 0x99) {
+                    registers.a += 0x60;
+                    registers.setCarryFlag(true);
+                }
+                if (registers.isHalfCarryFlag() || (registers.a & 0x0f) > 0x09) {
+                    registers.a += 0x06;
+                }
+            }
+            registers.setZeroFlag(registers.a == 0);
+            registers.setHalfCarryFlag(false);
+            return pc + 1;
+        case JR_Z_R8:
+            return jumpRelative(registers.isZeroFlag(), (SignedByte)bus.readByte(pc + 1));
+        case ADD_HL_HL:
+            registers.setHl(add(registers.getHl()));
+            return pc + 1;
+        case LD_A_HLP:
+            registers.a = bus.readByte(registers.getHl());
+            registers.setHl(registers.getHl() - 1);
+            return pc + 1;
         case DEC_HL:
             registers.setHl(registers.getHl() - 1);
             return pc + 1;
