@@ -133,6 +133,51 @@ struct CPU {
     Byte rr(const Byte& value);
 
     /**
+     * @brief shifts left a value to the right into the carry flag
+     * @param value the value to shift
+     * @return the new value
+     */
+    Byte sla(const Byte& value);
+    /**
+     * @brief arithmatically shifts right a value to the right into the carry flag
+     * @param value the value to shift
+     * @return the new value
+     */
+    Byte sra(const Byte& value);
+    /**
+     * @brief logially shifts right a value to the right into the carry flag
+     * @param value the value to shift
+     * @return the new value
+     */
+    Byte srl(const Byte& value);
+
+    /**
+     * @brief switches the lower and upper nibbles
+     * @param value the value to switch
+     * @return the new value
+     */
+    Byte swap(const Byte& value);
+
+    /**
+     * @brief tests a bit inside a byte
+     * @param idx the bit to test
+     * @param value the value to test
+     */
+    void bit(const Byte& idx, const Byte& value);
+    /**
+     * @brief turn off a bit inside a byte
+     * @param idx the bit to turn off
+     * @param value the value to turn off from
+     */
+    void res(const Byte& idx, Byte& value);
+    /**
+     * @brief turn on a bit inside a byte
+     * @param idx the bit to turn on
+     * @param value the value to turn on from
+     */
+    void set(const Byte& idx, Byte& value);
+
+    /**
      * @brief returns the address for the next instruction if should jump
      * @param shouldJump tells if the jump should happen or not
      * @return the next pc value

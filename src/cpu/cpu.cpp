@@ -21,6 +21,7 @@ void CPU::step() {
     Byte opcode = bus.readByte(pc);
     if (opcode == PREFIX_BYTE) {
         opcode = bus.readByte(pc + 1);
+        pc++;
         pc = executePrefixed(opcode);
     } else {
         pc = execute(opcode);
@@ -706,7 +707,7 @@ Word CPU::execute(const Byte& opcode) {
             registers.setZeroFlag(false);
             registers.setSubtractionFlag(false);
             registers.setCarryFlag(wordValue < (SignedWord)signedValue);
-            registers.setHalfCarryFlag((sp ^ signedValue ^ wordValue) & 8 != 0);
+            registers.setHalfCarryFlag((sp ^ signedValue ^ wordValue) & BYTE_SIZE != 0);
             sp = wordValue;
             return pc + 2;
         case JP_HL:
@@ -748,7 +749,7 @@ Word CPU::execute(const Byte& opcode) {
             registers.setZeroFlag(false);
             registers.setSubtractionFlag(false);
             registers.setCarryFlag(wordValue < (SignedWord)signedValue);
-            registers.setHalfCarryFlag((sp ^ signedValue ^ wordValue) & 8 != 0);
+            registers.setHalfCarryFlag((sp ^ signedValue ^ wordValue) & BYTE_SIZE != 0);
             registers.setHl(wordValue);
             return pc + 2;
         case LD_SP_HL:
@@ -767,7 +768,6 @@ Word CPU::execute(const Byte& opcode) {
             return 0x38;
         default:
             std::cout << "Unknown Opcode: " << opcode << "\n";
-            break;
             return pc;
     }
 }
@@ -775,6 +775,828 @@ Word CPU::execute(const Byte& opcode) {
 Word CPU::executePrefixed(const Byte& opcode) {
     if (isHalted) {
         return pc;
+    }
+    Byte byteValue = 0;
+    switch (opcode) {
+        // 0x0*
+        case RLC_B:
+            registers.b = rlc(registers.b);
+            return pc + 1;
+        case RLC_C:
+            registers.c = rlc(registers.c);
+            return pc + 1;
+        case RLC_D:
+            registers.d = rlc(registers.d);
+            return pc + 1;
+        case RLC_E:
+            registers.e = rlc(registers.e);
+            return pc + 1;
+        case RLC_H:
+            registers.h = rlc(registers.h);
+            return pc + 1;
+        case RLC_L:
+            registers.l = rlc(registers.l);
+            return pc + 1;
+        case RLC_HL:
+            bus.writeByte(registers.getHl(), rlc(bus.readByte(registers.getHl())));
+            return pc + 1;
+        case RLC_A:
+            registers.a = rlc(registers.a);
+            return pc + 1;
+        case RRC_B:
+            registers.b = rrc(registers.b);
+            return pc + 1;
+        case RRC_C:
+            registers.c = rrc(registers.c);
+            return pc + 1;
+        case RRC_D:
+            registers.d = rrc(registers.d);
+            return pc + 1;
+        case RRC_E:
+            registers.e = rrc(registers.e);
+            return pc + 1;
+        case RRC_H:
+            registers.h = rrc(registers.h);
+            return pc + 1;
+        case RRC_L:
+            registers.l = rrc(registers.l);
+            return pc + 1;
+        case RRC_HL:
+            bus.writeByte(registers.getHl(), rrc(bus.readByte(registers.getHl())));
+            return pc + 1;
+        case RRC_A:
+            registers.a = rrc(registers.a);
+            return pc + 1;
+        // 0x1*
+        case RL_B:
+            registers.b = rl(registers.b);
+            return pc + 1;
+        case RL_C:
+            registers.c = rl(registers.c);
+            return pc + 1;
+        case RL_D:
+            registers.d = rl(registers.d);
+            return pc + 1;
+        case RL_E:
+            registers.e = rl(registers.e);
+            return pc + 1;
+        case RL_H:
+            registers.h = rl(registers.h);
+            return pc + 1;
+        case RL_L:
+            registers.l = rl(registers.l);
+            return pc + 1;
+        case RL_HL:
+            bus.writeByte(registers.getHl(), rl(bus.readByte(registers.getHl())));
+            return pc + 1;
+        case RL_A:
+            registers.a = rl(registers.a);
+            return pc + 1;
+        case RR_B:
+            registers.b = rr(registers.b);
+            return pc + 1;
+        case RR_C:
+            registers.c = rr(registers.c);
+            return pc + 1;
+        case RR_D:
+            registers.d = rr(registers.d);
+            return pc + 1;
+        case RR_E:
+            registers.e = rr(registers.e);
+            return pc + 1;
+        case RR_H:
+            registers.h = rr(registers.h);
+            return pc + 1;
+        case RR_L:
+            registers.l = rr(registers.l);
+            return pc + 1;
+        case RR_HL:
+            bus.writeByte(registers.getHl(), rr(bus.readByte(registers.getHl())));
+            return pc + 1;
+        case RR_A:
+            registers.a = rr(registers.a);
+            return pc + 1;
+        // 0x2*
+        case SLA_B:
+            registers.b = sla(registers.b);
+            return pc + 1;
+        case SLA_C:
+            registers.c = sla(registers.c);
+            return pc + 1;
+        case SLA_D:
+            registers.d = sla(registers.d);
+            return pc + 1;
+        case SLA_E:
+            registers.e = sla(registers.e);
+            return pc + 1;
+        case SLA_H:
+            registers.h = sla(registers.h);
+            return pc + 1;
+        case SLA_L:
+            registers.l = sla(registers.l);
+            return pc + 1;
+        case SLA_HL:
+            bus.writeByte(registers.getHl(), sla(bus.readByte(registers.getHl())));
+            return pc + 1;
+        case SLA_A:
+            registers.a = sla(registers.a);
+            return pc + 1;
+        case SRA_B:
+            registers.b = sra(registers.b);
+            return pc + 1;
+        case SRA_C:
+            registers.c = sra(registers.c);
+            return pc + 1;
+        case SRA_D:
+            registers.d = sra(registers.d);
+            return pc + 1;
+        case SRA_E:
+            registers.e = sra(registers.e);
+            return pc + 1;
+        case SRA_H:
+            registers.h = sra(registers.h);
+            return pc + 1;
+        case SRA_L:
+            registers.l = sra(registers.l);
+            return pc + 1;
+        case SRA_HL:
+            bus.writeByte(registers.getHl(), sra(bus.readByte(registers.getHl())));
+            return pc + 1;
+        case SRA_A:
+            registers.a = sra(registers.a);
+            return pc + 1;
+        // 0x3*
+        case SWAP_B:
+            registers.b = swap(registers.b);
+            return pc + 1;
+        case SWAP_C:
+            registers.c = swap(registers.c);
+            return pc + 1;
+        case SWAP_D:
+            registers.d = swap(registers.d);
+            return pc + 1;
+        case SWAP_E:
+            registers.e = swap(registers.e);
+            return pc + 1;
+        case SWAP_H:
+            registers.h = swap(registers.h);
+            return pc + 1;
+        case SWAP_L:
+            registers.l = swap(registers.l);
+            return pc + 1;
+        case SWAP_HL:
+            bus.writeByte(registers.getHl(), swap(bus.readByte(registers.getHl())));
+            return pc + 1;
+        case SWAP_A:
+            registers.a = swap(registers.a);
+            return pc + 1;
+        case SRL_B:
+            registers.b = srl(registers.b);
+            return pc + 1;
+        case SRL_C:
+            registers.c = srl(registers.c);
+            return pc + 1;
+        case SRL_D:
+            registers.d = srl(registers.d);
+            return pc + 1;
+        case SRL_E:
+            registers.e = srl(registers.e);
+            return pc + 1;
+        case SRL_H:
+            registers.h = srl(registers.h);
+            return pc + 1;
+        case SRL_L:
+            registers.l = srl(registers.l);
+            return pc + 1;
+        case SRL_HL:
+            bus.writeByte(registers.getHl(), srl(bus.readByte(registers.getHl())));
+            return pc + 1;
+        case SRL_A:
+            registers.a = srl(registers.a);
+            return pc + 1;
+        // 0x4*
+        case BIT_0_B:
+            bit(0, registers.b);
+            return pc + 1;
+        case BIT_0_C:
+            bit(0, registers.c);
+            return pc + 1;
+        case BIT_0_D:
+            bit(0, registers.d);
+            return pc + 1;
+        case BIT_0_E:
+            bit(0, registers.e);
+            return pc + 1;
+        case BIT_0_H:
+            bit(0, registers.h);
+            return pc + 1;
+        case BIT_0_L:
+            bit(0, registers.l);
+            return pc + 1;
+        case BIT_0_HL:
+            bit(0, bus.readByte(registers.getHl()));
+            return pc + 1;
+        case BIT_0_A:
+            bit(0, registers.a);
+            return pc + 1;
+        case BIT_1_B:
+            bit(1, registers.b);
+            return pc + 1;
+        case BIT_1_C:
+            bit(1, registers.c);
+            return pc + 1;
+        case BIT_1_D:
+            bit(1, registers.d);
+            return pc + 1;
+        case BIT_1_E:
+            bit(1, registers.e);
+            return pc + 1;
+        case BIT_1_H:
+            bit(1, registers.h);
+            return pc + 1;
+        case BIT_1_L:
+            bit(1, registers.l);
+            return pc + 1;
+        case BIT_1_HL:
+            bit(1, bus.readByte(registers.getHl()));
+            return pc + 1;
+        case BIT_1_A:
+            bit(1, registers.a);
+            return pc + 1;
+        // 0x5*
+        case BIT_2_B:
+            bit(2, registers.b);
+            return pc + 1;
+        case BIT_2_C:
+            bit(2, registers.c);
+            return pc + 1;
+        case BIT_2_D:
+            bit(2, registers.d);
+            return pc + 1;
+        case BIT_2_E:
+            bit(2, registers.e);
+            return pc + 1;
+        case BIT_2_H:
+            bit(2, registers.h);
+            return pc + 1;
+        case BIT_2_L:
+            bit(2, registers.l);
+            return pc + 1;
+        case BIT_2_HL:
+            bit(2, bus.readByte(registers.getHl()));
+            return pc + 1;
+        case BIT_2_A:
+            bit(2, registers.a);
+            return pc + 1;
+        case BIT_3_B:
+            bit(3, registers.b);
+            return pc + 1;
+        case BIT_3_C:
+            bit(3, registers.c);
+            return pc + 1;
+        case BIT_3_D:
+            bit(3, registers.d);
+            return pc + 1;
+        case BIT_3_E:
+            bit(3, registers.e);
+            return pc + 1;
+        case BIT_3_H:
+            bit(3, registers.h);
+            return pc + 1;
+        case BIT_3_L:
+            bit(3, registers.l);
+            return pc + 1;
+        case BIT_3_HL:
+            bit(3, bus.readByte(registers.getHl()));
+            return pc + 1;
+        case BIT_3_A:
+            bit(3, registers.a);
+            return pc + 1;
+        // 0x6*
+        case BIT_4_B:
+            bit(4, registers.b);
+            return pc + 1;
+        case BIT_4_C:
+            bit(4, registers.c);
+            return pc + 1;
+        case BIT_4_D:
+            bit(4, registers.d);
+            return pc + 1;
+        case BIT_4_E:
+            bit(4, registers.e);
+            return pc + 1;
+        case BIT_4_H:
+            bit(4, registers.h);
+            return pc + 1;
+        case BIT_4_L:
+            bit(4, registers.l);
+            return pc + 1;
+        case BIT_4_HL:
+            bit(4, bus.readByte(registers.getHl()));
+            return pc + 1;
+        case BIT_4_A:
+            bit(4, registers.a);
+            return pc + 1;
+        case BIT_5_B:
+            bit(5, registers.b);
+            return pc + 1;
+        case BIT_5_C:
+            bit(5, registers.c);
+            return pc + 1;
+        case BIT_5_D:
+            bit(5, registers.d);
+            return pc + 1;
+        case BIT_5_E:
+            bit(5, registers.e);
+            return pc + 1;
+        case BIT_5_H:
+            bit(5, registers.h);
+            return pc + 1;
+        case BIT_5_L:
+            bit(5, registers.l);
+            return pc + 1;
+        case BIT_5_HL:
+            bit(5, bus.readByte(registers.getHl()));
+            return pc + 1;
+        case BIT_5_A:
+            bit(5, registers.a);
+            return pc + 1;
+        // 0x7*
+        case BIT_6_B:
+            bit(6, registers.b);
+            return pc + 1;
+        case BIT_6_C:
+            bit(6, registers.c);
+            return pc + 1;
+        case BIT_6_D:
+            bit(6, registers.d);
+            return pc + 1;
+        case BIT_6_E:
+            bit(6, registers.e);
+            return pc + 1;
+        case BIT_6_H:
+            bit(6, registers.h);
+            return pc + 1;
+        case BIT_6_L:
+            bit(6, registers.l);
+            return pc + 1;
+        case BIT_6_HL:
+            bit(6, bus.readByte(registers.getHl()));
+            return pc + 1;
+        case BIT_6_A:
+            bit(6, registers.a);
+            return pc + 1;
+        case BIT_7_B:
+            bit(7, registers.b);
+            return pc + 1;
+        case BIT_7_C:
+            bit(7, registers.c);
+            return pc + 1;
+        case BIT_7_D:
+            bit(7, registers.d);
+            return pc + 1;
+        case BIT_7_E:
+            bit(7, registers.e);
+            return pc + 1;
+        case BIT_7_H:
+            bit(7, registers.h);
+            return pc + 1;
+        case BIT_7_L:
+            bit(7, registers.l);
+            return pc + 1;
+        case BIT_7_HL:
+            bit(7, bus.readByte(registers.getHl()));
+            return pc + 1;
+        case BIT_7_A:
+            bit(7, registers.a);
+            return pc + 1;
+        // 0x8*
+        case RES_0_B:
+            res(0, registers.b);
+            return pc + 1;
+        case RES_0_C:
+            res(0, registers.c);
+            return pc + 1;
+        case RES_0_D:
+            res(0, registers.d);
+            return pc + 1;
+        case RES_0_E:
+            res(0, registers.e);
+            return pc + 1;
+        case RES_0_H:
+            res(0, registers.h);
+            return pc + 1;
+        case RES_0_L:
+            res(0, registers.l);
+            return pc + 1;
+        case RES_0_HL:
+            byteValue = bus.readByte(registers.getHl());
+            res(0, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case RES_0_A:
+            res(0, registers.a);
+            return pc + 1;
+        case RES_1_B:
+            res(1, registers.b);
+            return pc + 1;
+        case RES_1_C:
+            res(1, registers.c);
+            return pc + 1;
+        case RES_1_D:
+            res(1, registers.d);
+            return pc + 1;
+        case RES_1_E:
+            res(1, registers.e);
+            return pc + 1;
+        case RES_1_H:
+            res(1, registers.h);
+            return pc + 1;
+        case RES_1_L:
+            res(1, registers.l);
+            return pc + 1;
+        case RES_1_HL:
+            byteValue = bus.readByte(registers.getHl());
+            res(1, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case RES_1_A:
+            res(1, registers.a);
+            return pc + 1;
+        // 0x9*
+        case RES_2_B:
+            res(2, registers.b);
+            return pc + 1;
+        case RES_2_C:
+            res(2, registers.c);
+            return pc + 1;
+        case RES_2_D:
+            res(2, registers.d);
+            return pc + 1;
+        case RES_2_E:
+            res(2, registers.e);
+            return pc + 1;
+        case RES_2_H:
+            res(2, registers.h);
+            return pc + 1;
+        case RES_2_L:
+            res(2, registers.l);
+            return pc + 1;
+        case RES_2_HL:
+            byteValue = bus.readByte(registers.getHl());
+            res(2, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case RES_2_A:
+            res(2, registers.a);
+            return pc + 1;
+        case RES_3_B:
+            res(3, registers.b);
+            return pc + 1;
+        case RES_3_C:
+            res(3, registers.c);
+            return pc + 1;
+        case RES_3_D:
+            res(3, registers.d);
+            return pc + 1;
+        case RES_3_E:
+            res(3, registers.e);
+            return pc + 1;
+        case RES_3_H:
+            res(3, registers.h);
+            return pc + 1;
+        case RES_3_L:
+            res(3, registers.l);
+            return pc + 1;
+        case RES_3_HL:
+            byteValue = bus.readByte(registers.getHl());
+            res(3, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case RES_3_A:
+            res(3, registers.a);
+            return pc + 1;
+        // 0xa*
+        case RES_4_B:
+            res(4, registers.b);
+            return pc + 1;
+        case RES_4_C:
+            res(4, registers.c);
+            return pc + 1;
+        case RES_4_D:
+            res(4, registers.d);
+            return pc + 1;
+        case RES_4_E:
+            res(4, registers.e);
+            return pc + 1;
+        case RES_4_H:
+            res(4, registers.h);
+            return pc + 1;
+        case RES_4_L:
+            res(4, registers.l);
+            return pc + 1;
+        case RES_4_HL:
+            byteValue = bus.readByte(registers.getHl());
+            res(4, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case RES_4_A:
+            res(4, registers.a);
+            return pc + 1;
+        case RES_5_B:
+            res(5, registers.b);
+            return pc + 1;
+        case RES_5_C:
+            res(5, registers.c);
+            return pc + 1;
+        case RES_5_D:
+            res(5, registers.d);
+            return pc + 1;
+        case RES_5_E:
+            res(5, registers.e);
+            return pc + 1;
+        case RES_5_H:
+            res(5, registers.h);
+            return pc + 1;
+        case RES_5_L:
+            res(5, registers.l);
+            return pc + 1;
+        case RES_5_HL:
+            byteValue = bus.readByte(registers.getHl());
+            res(5, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case RES_5_A:
+            res(5, registers.a);
+            return pc + 1;
+        // 0xb*
+        case RES_6_B:
+            res(6, registers.b);
+            return pc + 1;
+        case RES_6_C:
+            res(6, registers.c);
+            return pc + 1;
+        case RES_6_D:
+            res(6, registers.d);
+            return pc + 1;
+        case RES_6_E:
+            res(6, registers.e);
+            return pc + 1;
+        case RES_6_H:
+            res(6, registers.h);
+            return pc + 1;
+        case RES_6_L:
+            res(6, registers.l);
+            return pc + 1;
+        case RES_6_HL:
+            byteValue = bus.readByte(registers.getHl());
+            res(6, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case RES_6_A:
+            res(6, registers.a);
+            return pc + 1;
+        case RES_7_B:
+            res(7, registers.b);
+            return pc + 1;
+        case RES_7_C:
+            res(7, registers.c);
+            return pc + 1;
+        case RES_7_D:
+            res(7, registers.d);
+            return pc + 1;
+        case RES_7_E:
+            res(7, registers.e);
+            return pc + 1;
+        case RES_7_H:
+            res(7, registers.h);
+            return pc + 1;
+        case RES_7_L:
+            res(7, registers.l);
+            return pc + 1;
+        case RES_7_HL:
+            byteValue = bus.readByte(registers.getHl());
+            res(7, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case RES_7_A:
+            res(7, registers.a);
+            return pc + 1;
+        // 0xc*
+        case SET_0_B:
+            set(0, registers.b);
+            return pc + 1;
+        case SET_0_C:
+            set(0, registers.c);
+            return pc + 1;
+        case SET_0_D:
+            set(0, registers.d);
+            return pc + 1;
+        case SET_0_E:
+            set(0, registers.e);
+            return pc + 1;
+        case SET_0_H:
+            set(0, registers.h);
+            return pc + 1;
+        case SET_0_L:
+            set(0, registers.l);
+            return pc + 1;
+        case SET_0_HL:
+            byteValue = bus.readByte(registers.getHl());
+            set(0, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case SET_0_A:
+            set(0, registers.a);
+            return pc + 1;
+        case SET_1_B:
+            set(1, registers.b);
+            return pc + 1;
+        case SET_1_C:
+            set(1, registers.c);
+            return pc + 1;
+        case SET_1_D:
+            set(1, registers.d);
+            return pc + 1;
+        case SET_1_E:
+            set(1, registers.e);
+            return pc + 1;
+        case SET_1_H:
+            set(1, registers.h);
+            return pc + 1;
+        case SET_1_L:
+            set(1, registers.l);
+            return pc + 1;
+        case SET_1_HL:
+            byteValue = bus.readByte(registers.getHl());
+            set(1, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case SET_1_A:
+            set(1, registers.a);
+            return pc + 1;
+        // 0xd*
+        case SET_2_B:
+            set(2, registers.b);
+            return pc + 1;
+        case SET_2_C:
+            set(2, registers.c);
+            return pc + 1;
+        case SET_2_D:
+            set(2, registers.d);
+            return pc + 1;
+        case SET_2_E:
+            set(2, registers.e);
+            return pc + 1;
+        case SET_2_H:
+            set(2, registers.h);
+            return pc + 1;
+        case SET_2_L:
+            set(2, registers.l);
+            return pc + 1;
+        case SET_2_HL:
+            byteValue = bus.readByte(registers.getHl());
+            set(2, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case SET_2_A:
+            set(2, registers.a);
+            return pc + 1;
+        case SET_3_B:
+            set(3, registers.b);
+            return pc + 1;
+        case SET_3_C:
+            set(3, registers.c);
+            return pc + 1;
+        case SET_3_D:
+            set(3, registers.d);
+            return pc + 1;
+        case SET_3_E:
+            set(3, registers.e);
+            return pc + 1;
+        case SET_3_H:
+            set(3, registers.h);
+            return pc + 1;
+        case SET_3_L:
+            set(3, registers.l);
+            return pc + 1;
+        case SET_3_HL:
+            byteValue = bus.readByte(registers.getHl());
+            set(3, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case SET_3_A:
+            set(3, registers.a);
+            return pc + 1;
+        // 0xe*
+        case SET_4_B:
+            set(4, registers.b);
+            return pc + 1;
+        case SET_4_C:
+            set(4, registers.c);
+            return pc + 1;
+        case SET_4_D:
+            set(4, registers.d);
+            return pc + 1;
+        case SET_4_E:
+            set(4, registers.e);
+            return pc + 1;
+        case SET_4_H:
+            set(4, registers.h);
+            return pc + 1;
+        case SET_4_L:
+            set(4, registers.l);
+            return pc + 1;
+        case SET_4_HL:
+            byteValue = bus.readByte(registers.getHl());
+            set(4, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case SET_4_A:
+            set(4, registers.a);
+            return pc + 1;
+        case SET_5_B:
+            set(5, registers.b);
+            return pc + 1;
+        case SET_5_C:
+            set(5, registers.c);
+            return pc + 1;
+        case SET_5_D:
+            set(5, registers.d);
+            return pc + 1;
+        case SET_5_E:
+            set(5, registers.e);
+            return pc + 1;
+        case SET_5_H:
+            set(5, registers.h);
+            return pc + 1;
+        case SET_5_L:
+            set(5, registers.l);
+            return pc + 1;
+        case SET_5_HL:
+            byteValue = bus.readByte(registers.getHl());
+            set(5, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case SET_5_A:
+            set(5, registers.a);
+            return pc + 1;
+        // 0xf*
+        case SET_6_B:
+            set(6, registers.b);
+            return pc + 1;
+        case SET_6_C:
+            set(6, registers.c);
+            return pc + 1;
+        case SET_6_D:
+            set(6, registers.d);
+            return pc + 1;
+        case SET_6_E:
+            set(6, registers.e);
+            return pc + 1;
+        case SET_6_H:
+            set(6, registers.h);
+            return pc + 1;
+        case SET_6_L:
+            set(6, registers.l);
+            return pc + 1;
+        case SET_6_HL:
+            byteValue = bus.readByte(registers.getHl());
+            set(6, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case SET_6_A:
+            set(6, registers.a);
+            return pc + 1;
+        case SET_7_B:
+            set(7, registers.b);
+            return pc + 1;
+        case SET_7_C:
+            set(7, registers.c);
+            return pc + 1;
+        case SET_7_D:
+            set(7, registers.d);
+            return pc + 1;
+        case SET_7_E:
+            set(7, registers.e);
+            return pc + 1;
+        case SET_7_H:
+            set(7, registers.h);
+            return pc + 1;
+        case SET_7_L:
+            set(7, registers.l);
+            return pc + 1;
+        case SET_7_HL:
+            byteValue = bus.readByte(registers.getHl());
+            set(7, byteValue);
+            bus.writeByte(registers.getHl(), byteValue);
+            return pc + 1;
+        case SET_7_A:
+            set(7, registers.a);
+            return pc + 1;
+        default:
+            std::cout << "Unknown Opcode: " << opcode << "\n";
+            return pc;
     }
 }
 
@@ -790,7 +1612,7 @@ Word CPU::add(const Word& value) {
     Word newValue = registers.getHl() + value;
     registers.setSubtractionFlag(false);
     registers.setCarryFlag(newValue < value);
-    registers.setHalfCarryFlag((registers.getHl() ^ value ^ newValue) & 8 != 0);
+    registers.setHalfCarryFlag((registers.getHl() ^ value ^ newValue) & BYTE_SIZE != 0);
     return newValue;
 }
 Byte CPU::adc(const Byte& value) {
@@ -805,7 +1627,7 @@ Word CPU::adc(const Word& value) {
     Word newValue = registers.getHl() + value + (Word)registers.isCarryFlag();
     registers.setZeroFlag(newValue == 0);
     registers.setSubtractionFlag(false);
-    registers.setHalfCarryFlag((registers.getHl() ^ (value + (Word)registers.isCarryFlag()) ^ newValue) & 8 != 0);
+    registers.setHalfCarryFlag((registers.getHl() ^ (value + (Word)registers.isCarryFlag()) ^ newValue) & BYTE_SIZE != 0);
     registers.setCarryFlag(newValue < value + (Word)registers.isCarryFlag());
     return newValue;
 }
@@ -866,29 +1688,95 @@ void CPU::dec(Byte& value) {
 }
 
 Byte CPU::rlc(const Byte& value) {
-    Byte topBit = topBit >> 7;
+    Byte topBit = value >> 7;
     Byte newValue = (value << 1) | topBit;
+    registers.setZeroFlag(newValue == 0);
+    registers.setSubtractionFlag(false);
+    registers.setHalfCarryFlag(false);
     registers.setCarryFlag(topBit != 0);
     return newValue;
 }
-
 Byte CPU::rrc(const Byte& value) {
     Byte lowBit = value % 2;
     Byte newValue = (value >> 1) | (lowBit << 7);
+    registers.setZeroFlag(newValue == 0);
+    registers.setSubtractionFlag(false);
+    registers.setHalfCarryFlag(false);
     registers.setCarryFlag(lowBit != 0);
     return newValue;
 }
 Byte CPU::rl(const Byte& value) {
-    Byte topBit = topBit >> 7;
+    Byte topBit = value >> 7;
     Byte newValue = (value << 1) | (Byte)registers.isCarryFlag();
+    registers.setZeroFlag(newValue == 0);
+    registers.setSubtractionFlag(false);
+    registers.setHalfCarryFlag(false);
     registers.setCarryFlag(topBit != 0);
     return newValue;
 }
 Byte CPU::rr(const Byte& value) {
     Byte lowBit = value % 2;
     Byte newValue = (value >> 1) | (((Byte)registers.isCarryFlag()) << 7);
+    registers.setZeroFlag(newValue == 0);
+    registers.setSubtractionFlag(false);
+    registers.setHalfCarryFlag(false);
     registers.setCarryFlag(lowBit != 0);
     return newValue;
+}
+
+Byte CPU::sla(const Byte& value) {
+    Byte topBit = value >> 7;
+    Byte newValue = value << 1;
+    registers.setZeroFlag(newValue == 0);
+    registers.setSubtractionFlag(false);
+    registers.setHalfCarryFlag(false);
+    registers.setCarryFlag(topBit != 0);
+    return newValue;
+}
+Byte CPU::sra(const Byte& value) {
+    Byte lowBit = value % 2;
+    Byte topBit = value >> 7;
+    Byte newValue = (value >> 1) | (topBit << 7);
+    registers.setZeroFlag(newValue == 0);
+    registers.setSubtractionFlag(false);
+    registers.setHalfCarryFlag(false);
+    registers.setCarryFlag(lowBit != 0);
+    return newValue;
+}
+Byte CPU::srl(const Byte& value) {
+    Byte lowBit = value % 2;
+    Byte newValue = (value >> 1);
+    registers.setZeroFlag(newValue == 0);
+    registers.setSubtractionFlag(false);
+    registers.setHalfCarryFlag(false);
+    registers.setCarryFlag(lowBit != 0);
+    return newValue;
+}
+
+Byte CPU::swap(const Byte& value) {
+    Byte topNibble = (value >> HALF_BYTE_SIZE) << HALF_BYTE_SIZE;
+    Byte lowNibble = (value << HALF_BYTE_SIZE) >> HALF_BYTE_SIZE;
+    Byte newValue = (topNibble >> HALF_BYTE_SIZE) | (lowNibble << HALF_BYTE_SIZE);
+    registers.setZeroFlag(newValue == 0);
+    registers.setSubtractionFlag(false);
+    registers.setHalfCarryFlag(false);
+    registers.setCarryFlag(false);
+    return newValue;
+}
+
+void CPU::bit(const Byte& idx, const Byte& value) {
+    Byte bit = 1 << idx;
+    registers.setZeroFlag(value & bit == 0);
+    registers.setSubtractionFlag(false);
+    registers.setHalfCarryFlag(true);
+}
+void CPU::res(const Byte& idx, Byte& value) {
+    Byte bit = 1 << idx;
+    value = value & ~bit;
+}
+void CPU::set(const Byte& idx, Byte& value) {
+    Byte bit = 1 << idx;
+    value = value | bit;
 }
 
 Word CPU::jump(const bool& shouldJump) {
@@ -897,7 +1785,7 @@ Word CPU::jump(const bool& shouldJump) {
     }
     Word least_significant_byte = (Word)bus.readByte(pc + 1);
     Word most_significant_byte = (Word)bus.readByte(pc + 2);
-    return (most_significant_byte << 8 | least_significant_byte);
+    return (most_significant_byte << BYTE_SIZE | least_significant_byte);
 }
 Word CPU::jumpRelative(const bool& shouldJump, const SignedByte& value) {
     if (!shouldJump) {
@@ -908,7 +1796,7 @@ Word CPU::jumpRelative(const bool& shouldJump, const SignedByte& value) {
 
 void CPU::push(const Word& value) {
     sp -= 1;
-    bus.writeByte(sp, (Byte)((value & TOP_WORD) >> 8));
+    bus.writeByte(sp, (Byte)((value & TOP_WORD) >> BYTE_SIZE));
     sp -= 1;
     bus.writeByte(sp, (Byte)(value & FULL_BYTE));
 }
@@ -918,7 +1806,7 @@ Word CPU::pop() {
     sp += 1;
     Word most_significant_byte = (Word)bus.readByte(sp);
     sp += 1;
-    return (most_significant_byte << 8) | least_significant_byte;
+    return (most_significant_byte << BYTE_SIZE) | least_significant_byte;
 }
 
 Word CPU::call(const bool& shouldCall) {
