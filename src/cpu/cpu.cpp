@@ -467,28 +467,28 @@ Word CPU::execute(const Byte& opcode) {
             registers.a = adc(registers.a);
             return pc + 1;
         // 0x9*
-        case SUB_A_B:
+        case SUB_B:
             registers.a = sub(registers.b);
             return pc + 1;
-        case SUB_A_C:
+        case SUB_C:
             registers.a = sub(registers.c);
             return pc + 1;
-        case SUB_A_D:
+        case SUB_D:
             registers.a = sub(registers.d);
             return pc + 1;
-        case SUB_A_E:
+        case SUB_E:
             registers.a = sub(registers.e);
             return pc + 1;
-        case SUB_A_H:
+        case SUB_H:
             registers.a = sub(registers.h);
             return pc + 1;
-        case SUB_A_L:
+        case SUB_L:
             registers.a = sub(registers.l);
             return pc + 1;
-        case SUB_A_HL:
+        case SUB_HL:
             registers.a = sub(bus.readByte(registers.getHl()));
             return pc + 1;
-        case SUB_A_A:
+        case SUB_A:
             registers.a = sub(registers.a);
             return pc + 1;
         case SBC_A_B:
@@ -516,101 +516,101 @@ Word CPU::execute(const Byte& opcode) {
             registers.a = sbc(registers.a);
             return pc + 1;
         // 0xa*
-        case AND_A_B:
+        case AND_B:
             registers.a = logical_and(registers.b);
             return pc + 1;
-        case AND_A_C:
+        case AND_C:
             registers.a = logical_and(registers.c);
             return pc + 1;
-        case AND_A_D:
+        case AND_D:
             registers.a = logical_and(registers.d);
             return pc + 1;
-        case AND_A_E:
+        case AND_E:
             registers.a = logical_and(registers.e);
             return pc + 1;
-        case AND_A_H:
+        case AND_H:
             registers.a = logical_and(registers.h);
             return pc + 1;
-        case AND_A_L:
+        case AND_L:
             registers.a = logical_and(registers.l);
             return pc + 1;
-        case AND_A_HL:
+        case AND_HL:
             registers.a = logical_and(bus.readByte(registers.getHl()));
             return pc + 1;
-        case AND_A_A:
+        case AND_A:
             registers.a = logical_and(registers.a);
             return pc + 1;
-        case XOR_A_B:
+        case XOR_B:
             registers.a = logical_xor(registers.b);
             return pc + 1;
-        case XOR_A_C:
+        case XOR_C:
             registers.a = logical_xor(registers.c);
             return pc + 1;
-        case XOR_A_D:
+        case XOR_D:
             registers.a = logical_xor(registers.d);
             return pc + 1;
-        case XOR_A_E:
+        case XOR_E:
             registers.a = logical_xor(registers.e);
             return pc + 1;
-        case XOR_A_H:
+        case XOR_H:
             registers.a = logical_xor(registers.h);
             return pc + 1;
-        case XOR_A_L:
+        case XOR_L:
             registers.a = logical_xor(registers.l);
             return pc + 1;
-        case XOR_A_HL:
+        case XOR_HL:
             registers.a = logical_xor(bus.readByte(registers.getHl()));
             return pc + 1;
-        case XOR_A_A:
+        case XOR_A:
             registers.a = logical_xor(registers.a);
             return pc + 1;
         // 0xb*
-        case OR_A_B:
+        case OR_B:
             registers.a = logical_or(registers.b);
             return pc + 1;
-        case OR_A_C:
+        case OR_C:
             registers.a = logical_or(registers.c);
             return pc + 1;
-        case OR_A_D:
+        case OR_D:
             registers.a = logical_or(registers.d);
             return pc + 1;
-        case OR_A_E:
+        case OR_E:
             registers.a = logical_or(registers.e);
             return pc + 1;
-        case OR_A_H:
+        case OR_H:
             registers.a = logical_or(registers.h);
             return pc + 1;
-        case OR_A_L:
+        case OR_L:
             registers.a = logical_or(registers.l);
             return pc + 1;
-        case OR_A_HL:
+        case OR_HL:
             registers.a = logical_or(bus.readByte(registers.getHl()));
             return pc + 1;
-        case OR_A_A:
+        case OR_A:
             registers.a = logical_or(registers.a);
             return pc + 1;
-        case CP_A_B:
+        case CP_B:
             sub(registers.b);
             return pc + 1;
-        case CP_A_C:
+        case CP_C:
             sub(registers.c);
             return pc + 1;
-        case CP_A_D:
+        case CP_D:
             sub(registers.d);
             return pc + 1;
-        case CP_A_E:
+        case CP_E:
             sub(registers.e);
             return pc + 1;
-        case CP_A_H:
+        case CP_H:
             sub(registers.h);
             return pc + 1;
-        case CP_A_L:
+        case CP_L:
             sub(registers.l);
             return pc + 1;
-        case CP_A_HL:
+        case CP_HL:
             sub(bus.readByte(registers.getHl()));
             return pc + 1;
-        case CP_A_A:
+        case CP_A:
             sub(registers.a);
             return pc + 1;
         // 0xc*
